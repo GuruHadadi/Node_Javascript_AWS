@@ -10,8 +10,8 @@ const AWS = require('aws-sdk');
 AWS.config.update(
     {
         region: 'ap-southeast-2',
-        accessKeyId: 'AKIAIM_DUMMY_JEB3BQ',
-        secretAccessKey: 'boXgCHa_DUMMY_asfdsafdsf1cmvKHJeo6zC/sZcIj'
+        accessKeyId: 'AKIAI__DUMMY__PIJEB3BQ',
+        secretAccessKey: 'boXgC__DUMMY__2+7kL__DUMMY__r1cmvK__DUMMY__sZcIj'
     }
 );
 
@@ -20,17 +20,20 @@ AWS.config.update(
 var ec2 = new AWS.EC2({apiVersion: '2016-11-15'});
 
 
-var params = {
-    InstanceIds: [ /* required */
-        'i-0485242f7fc960da5',
-        /* more items */
-    ],
-    // DryRun: true || false,
-    // Force: true || false
-};
 
-ec2.stopInstances(params, function(err, data) {
-    if (err) console.log(err, err.stack); // an error occurred
-    else     console.log(data);           // successful response
-});
+
+module.exports = function (instanceId, cb) {
+    var params = {
+        InstanceIds: [ /* required */
+            instanceId//'i-0485242f7fc960da5',
+            /* more items */
+        ],
+        // DryRun: true || false,
+        // Force: true || false
+    };
+
+    ec2.stopInstances(params, function (err, data) {
+        cb(err, data)
+    });
+}
 

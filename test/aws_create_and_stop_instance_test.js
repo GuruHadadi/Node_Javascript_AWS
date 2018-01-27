@@ -2,8 +2,10 @@
  * Created by guru on 24/01/18.
  */
 const assert = require('chai').assert;
-const app = require('../get_instance_info');
+const get = require('../get_instance_info');
 const create = require('../create_instance');
+const stop = require('../stop_instance');
+const expect = require('chai').expect;
 
 
 
@@ -15,6 +17,7 @@ const create = require('../create_instance');
  */
 
 var instanceId;
+
 describe('App', function () {
     it('create aws ec2 instance', function (done) {
         create(function(err,data,InstanceId){
@@ -30,16 +33,45 @@ describe('App', function () {
     it('validate that instance created', function (done) {
         if (!instanceId) throw  new Error("no instance id");
 
-        app(instanceId,function(err,data){
+        get(instanceId,function(err,data){
             assert(err==undefined);
             console.log(data.InstanceStatuses[0].InstanceState.Name);
             // console.log(data.InstanceStatuses[0].InstanceStatus);
             console.log(typeof data)
-            assert(data.InstanceStatuses[0].InstanceState.Name=="stopped");
+            assert(data.InstanceStatuses[0].InstanceState.Name=="running");
             done()
         })
     });
+
+    it('stop the instance', function (done) {
+        if (!instanceId) throw  new Error("no instance id");
+
+        stop(instanceId,function(err){
+            assert(err==undefined);
+            console.log("instance stop method");
+
+            done()
+        })
+    });
+
+    it('validate that the instance is stopped', function (done) {
+        if (!instanceId) throw  new Error("no instance id");
+
+        get(instanceId,function(err, data){
+            assert(err==undefined);
+            console.log("get instance info method");
+            // assert(data.InstanceStatuses[0].InstanceState.Name=="stopped");
+            expect(data.InstanceStatuses[0].InstanceState.Name).to.equal('stopped');
+            done()
+        })
+    });
+
 });
+
+/*
+    -
+ */
+
 
 
 /*
